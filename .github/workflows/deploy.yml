@@ -17,12 +17,17 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        # The app lives in the "Project 2" folder of this repository.
+        working-directory: Project 2
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
+          cache-dependency-path: Project 2/package-lock.json
       - run: npm ci
       - run: npm run build
       # The app is published only under a secret, unguessable path (repository secret
@@ -40,7 +45,7 @@ jobs:
           touch site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: Project 2/site
           retention-days: 1
 
   deploy:
