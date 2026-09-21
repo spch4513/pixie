@@ -1,0 +1,52 @@
+name: Deploy Pixie
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      # The app is published only under a secret, unguessable path (repository secret
+      # PIXIE_PATH). The site root is a blank page, and search engines are told not to index.
+      - name: Place app at the unlisted path
+        env:
+          PIXIE_PATH: ${{ secrets.PIXIE_PATH }}
+        run: |
+          test -n "$PIXIE_PATH" || { echo "::error::Add a PIXIE_PATH repository secret"; exit 1; }
+          mkdir -p "site/$PIXIE_PATH"
+          cp -R dist/. "site/$PIXIE_PATH/"
+          cp deploy/root-index.html site/index.html
+          cp deploy/root-index.html site/404.html
+          cp deploy/robots.txt site/robots.txt
+          touch site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    steps:
+      - uses: actions/deploy-pages@v4

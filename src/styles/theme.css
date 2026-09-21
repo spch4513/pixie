@@ -1,0 +1,211 @@
+/* ───────────── Pixie theme: ink, paper, halftone. Red is reserved for recording. ───────────── */
+
+:root {
+  --ink: #0a0a0a;
+  --char: #1a1a1a;
+  --char-2: #2a2a2a;
+  --mid: #8a8a8a;
+  --light: #e3e3e3;
+  --paper: #ffffff;
+  --rec: #ff2a1a;
+
+  --sans: 'Archivo Variable', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --dots-ink: radial-gradient(circle, var(--ink) 0 1.1px, transparent 1.6px);
+  --dots-paper: radial-gradient(circle, rgba(255, 255, 255, 0.6) 0 1px, transparent 1.5px);
+
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.4;
+  background: var(--ink);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  overscroll-behavior: none;
+}
+
+button,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+button:disabled,
+button[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+/* Two-tone focus ring: readable on black UI, white UI and live camera alike. */
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--paper);
+}
+
+.live :focus-visible {
+  outline-color: var(--paper);
+  box-shadow: 0 0 0 2px var(--ink);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ───────────── Buttons ───────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 18px;
+  border: 2px solid currentColor;
+  border-radius: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-weight: 750;
+  font-stretch: 110%;
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
+}
+
+.btn:active {
+  transform: translate(1px, 1px);
+}
+
+.btn--ink {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.btn--paper {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+}
+
+.btn--outline {
+  color: var(--paper);
+}
+
+.btn--outline-ink {
+  color: var(--ink);
+}
+
+.btn--ghost {
+  border-color: transparent;
+  color: var(--paper);
+  opacity: 0.8;
+}
+
+@media (hover: hover) {
+  .btn--ink:hover {
+    box-shadow: 4px 4px 0 var(--mid);
+  }
+  .btn--paper:hover,
+  .btn--outline:hover {
+    box-shadow: 4px 4px 0 rgba(255, 255, 255, 0.35);
+  }
+  .btn--outline-ink:hover {
+    box-shadow: 4px 4px 0 var(--ink);
+  }
+  .btn--ghost:hover {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+
+/* ───────────── Tooltips (hover + keyboard focus; aria-label carries the same text) ───────────── */
+
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  left: 50%;
+  top: calc(100% + 8px);
+  transform: translateX(-50%);
+  z-index: 50;
+  padding: 4px 7px;
+  white-space: nowrap;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  font: 500 11px/1.2 var(--mono);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+[data-tip-side='top']::after {
+  top: auto;
+  bottom: calc(100% + 8px);
+}
+
+[data-tip]:focus-visible::after {
+  opacity: 1;
+}
+
+@media (hover: hover) {
+  [data-tip]:hover::after {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
