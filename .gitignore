@@ -1,5 +1,6 @@
-node_modules
-dist
-public/mediapipe
+node_modules/
+dist/
+**/public/mediapipe/
+.vite/
 *.local
 .DS_Store
